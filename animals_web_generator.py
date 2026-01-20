@@ -43,28 +43,15 @@ def format_animal(animal):
 
 
 def build_animal_li(animal):
-    """Builds one <li> card for the animal for the HTML page."""
+    """Serializes one animal into a simple <li class="cards__item">...</li> block (Step 3)."""
     lines = format_animal(animal)
     if not lines:
         return ""
 
-    title = ""
-    body_lines = []
+    html_lines = [f"{line}<br/>\n" for line in lines]
 
-    for line in lines:
-        if line.startswith("Name: "):
-            title = line.replace("Name: ", "").strip()
-        else:
-            body_lines.append(line)
+    return '<li class="cards__item">\n' + "".join(html_lines) + "</li>\n"
 
-    body_html = "<br>".join(body_lines)
-
-    return (
-        '<li class="cards__item">'
-        f'<div class="card__title">{title}</div>'
-        f'<p class="card__text">{body_html}</p>'
-        "</li>"
-    )
 
 
 def read_template(file_path):
