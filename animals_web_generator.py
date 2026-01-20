@@ -1,6 +1,8 @@
 import json
 from json import JSONDecodeError
 
+DEBUG_PRINT = False
+
 
 def load_data(file_path):
     """Loads a JSON file and returns the parsed data structure."""
@@ -17,41 +19,58 @@ def load_data(file_path):
         print(f"Fehler: Ungültiges JSON in {file_path}: {exc}")
         return []
 
-def format_animal(animal):
-    """Builds the output lines for one animal dict."""
-    lines = []
+
+def extract_animal_fields(animal):
+    """Extracts the relevant fields for the HTML card from one animal dict."""
+    if not isinstance(animal, dict):
+        return None
 
     name = animal.get("name")
-    if name:
-        lines.append(f"Name: {name}")
 
     characteristics = animal.get("characteristics", {})
+    if not isinstance(characteristics, dict):
+        characteristics = {}
+
     diet = characteristics.get("diet")
-    if diet:
-        lines.append(f"Diet: {diet}")
+    animal_type = characteristics.get("type")
 
     locations = animal.get("locations")
+    location = None
     if isinstance(locations, list) and locations:
-        lines.append(f"Location: {locations[0]}")
+        location = locations[0]
 
-    animal_type = characteristics.get("type")
-    if animal_type:
-        lines.append(f"Type: {animal_type}")
+    return {
+        "name": name,
+        "diet": diet,
+        "location": location,
+        "type": animal_type,
+    }
 
-    return lines
 
+def build_info_line(label, value):
+    """Builds one labeled line inside the card text block."""
+    if not value:
+        return ""
+    return f'      <strong>{label}:</strong> {value}<br/>\n'
 
 
 def build_animal_li(animal):
-    """Serializes one animal into a simple <li class="cards__item">...</li> block (Step 3)."""
-    lines = format_animal(animal)
-    if not lines:
+    """Serializes one animal into the Step-4 <li class="cards__item">...</li> card."""
+    fields = extract_animal_fields(animal)
+    if not fields or not fields.get("name"):
         return ""
 
-    html_lines = [f"{line}<br/>\n" for line in lines]
+    parts = []
+    parts.append('<li class="cards__item">\n')
+    parts.append(f'  <div class="card__title">{fields["name"]}</div>\n')
+    parts.append('  <p class="card__text">\n')
+    parts.append(build_info_line("Diet", fields.get("diet")))
+    parts.append(build_info_line("Location", fields.get("location")))
+    parts.append(build_info_line("Type", fields.get("type")))
+    parts.append("  </p>\n")
+    parts.append("</li>\n")
 
-    return '<li class="cards__item">\n' + "".join(html_lines) + "</li>\n"
-
+    return "".join(parts)
 
 
 def read_template(file_path):
@@ -72,22 +91,26 @@ def main():
         print("Fehler: animals_data.json muss eine Liste von Tieren enthalten.")
         return
 
-    # 1) Optional: Konsole (Debug / Schritt 1)
-    for animal in animals_data:
-        if not isinstance(animal, dict):
-            continue
+    if DEBUG_PRINT:
+        for animal in animals_data:
+            fields = extract_animal_fields(animal)
+            if not fields or not fields.get("name"):
+                continue
 
-        lines = format_animal(animal)
-        if lines:
+            lines = []
+            lines.append(f'Name: {fields["name"]}')
+            if fields.get("diet"):
+                lines.append(f'Diet: {fields["diet"]}')
+            if fields.get("location"):
+                lines.append(f'Location: {fields["location"]}')
+            if fields.get("type"):
+                lines.append(f'Type: {fields["type"]}')
+
             print("\n".join(lines))
             print()
 
-    # 2) HTML erzeugen (Schritt 2)
     animals_li_items = []
     for animal in animals_data:
-        if not isinstance(animal, dict):
-            continue
-
         animal_li = build_animal_li(animal)
         if animal_li:
             animals_li_items.append(animal_li)
@@ -100,5 +123,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
