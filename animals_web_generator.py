@@ -73,6 +73,13 @@ def build_animal_li(animal):
     return "".join(parts)
 
 
+
+def serialize_animal(animal_obj):
+    """Serializes one animal object into the required HTML card."""
+    return build_animal_li(animal_obj)
+
+
+
 def read_template(file_path):
     """Loads an HTML template file and returns it as a string."""
     with open(file_path, "r", encoding="utf-8") as handle:
@@ -111,7 +118,8 @@ def main():
 
     animals_li_items = []
     for animal in animals_data:
-        animal_li = build_animal_li(animal)
+        animal_li = serialize_animal(animal)
+
         if animal_li:
             animals_li_items.append(animal_li)
 
