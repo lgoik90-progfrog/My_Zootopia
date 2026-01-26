@@ -1,132 +1,188 @@
-import json
-from json import JSONDecodeError
+import html
+import os
+from typing import Any
 
-DEBUG_PRINT = False
+import requests
+
+BASE_URL = "https://api.api-ninjas.com/v1/animals"
+TIMEOUT_SECONDS = 10
+OUTPUT_FILE = "animals.html"
+ENV_KEY_NAME = "API_NINJAS_KEY"
+DEFAULT_ANIMAL = "Fox"
 
 
-def load_data(file_path):
-    """Loads a JSON file and returns the parsed data structure."""
+def normalize_animal_name(raw: str) -> str:
+    """Normalize user input for animal name (strip only, keep case for display)."""
+    return raw.strip()
+
+
+def get_api_key() -> str:
+    """Read API key from environment and validate it exists."""
+    api_key = os.getenv(ENV_KEY_NAME)
+    if not api_key:
+        raise RuntimeError(f"Missing {ENV_KEY_NAME} environment variable.")
+    return api_key
+
+
+def fetch_animals(animal_name: str) -> list[dict]:
+    """Fetch animal data from API Ninjas Animals endpoint for the given name."""
+    api_key = get_api_key()
+
+    params = {"name": animal_name}
+    headers = {"X-Api-Key": api_key}
+
     try:
-        with open(file_path, "r", encoding="utf-8") as handle:
-            return json.load(handle)
-    except FileNotFoundError:
-        print(f"Fehler: Datei nicht gefunden: {file_path}")
-        return []
-    except PermissionError:
-        print(f"Fehler: Keine Berechtigung für: {file_path}")
-        return []
-    except JSONDecodeError as exc:
-        print(f"Fehler: Ungültiges JSON in {file_path}: {exc}")
-        return []
+        response = requests.get(
+            BASE_URL,
+            headers=headers,
+            params=params,
+            timeout=TIMEOUT_SECONDS,
+        )
+        response.raise_for_status()
+        data = response.json()
+    except requests.exceptions.Timeout as exc:
+        raise RuntimeError("Request timed out.") from exc
+    except requests.exceptions.HTTPError as exc:
+        status = getattr(response, "status_code", "n/a")
+        raise RuntimeError(f"HTTP error: {status}") from exc
+    except ValueError as exc:
+        raise RuntimeError("Invalid JSON in response.") from exc
+
+    if not isinstance(data, list):
+        raise RuntimeError("Unexpected API response format (expected list).")
+
+    return data
 
 
-def extract_animal_fields(animal):
-    """Extracts the relevant fields for the HTML card from one animal dict."""
-    if not isinstance(animal, dict):
-        return None
+def prompt_animal_name() -> str:
+    """Ask user for an animal name; empty input falls back to DEFAULT_ANIMAL."""
+    while True:
+        raw = input(f'Enter a name of an animal (default: "{DEFAULT_ANIMAL}"): ')
+        animal_name = normalize_animal_name(raw)
 
-    name = animal.get("name")
+        if animal_name:
+            return animal_name
 
-    characteristics = animal.get("characteristics", {})
-    if not isinstance(characteristics, dict):
-        characteristics = {}
-
-    diet = characteristics.get("diet")
-    animal_type = characteristics.get("type")
-
-    locations = animal.get("locations")
-    location = None
-    if isinstance(locations, list) and locations:
-        location = locations[0]
-
-    return {
-        "name": name,
-        "diet": diet,
-        "location": location,
-        "type": animal_type,
-    }
+        return DEFAULT_ANIMAL
 
 
-def build_info_line(label, value):
-    """Builds one labeled line inside the card text block."""
-    if not value:
-        return ""
-    return f'      <strong>{label}:</strong> {value}<br/>\n'
+def safe_get(mapping: dict, key: str, default: str = "n/a") -> str:
+    """Get a string value from a dict safely."""
+    value = mapping.get(key, default)
+    if value is None:
+        return default
+    return str(value)
 
 
-def build_animal_li(animal):
-    """Serializes one animal into the Step-4 <li class="cards__item">...</li> card."""
-    fields = extract_animal_fields(animal)
-    if not fields or not fields.get("name"):
-        return ""
+def build_animal_section(animal: dict) -> str:
+    """Build one HTML block for a single animal result."""
+    name = html.escape(safe_get(animal, "name", "Unknown"))
+    taxonomy = animal.get("taxonomy") if isinstance(animal.get("taxonomy"), dict) else {}
+    characteristics = (
+        animal.get("characteristics")
+        if isinstance(animal.get("characteristics"), dict)
+        else {}
+    )
+    locations = animal.get("locations") if isinstance(animal.get("locations"), list) else []
 
-    parts = []
-    parts.append('<li class="cards__item">\n')
-    parts.append(f'  <div class="card__title">{fields["name"]}</div>\n')
-    parts.append('  <p class="card__text">\n')
-    parts.append(build_info_line("Diet", fields.get("diet")))
-    parts.append(build_info_line("Location", fields.get("location")))
-    parts.append(build_info_line("Type", fields.get("type")))
-    parts.append("  </p>\n")
-    parts.append("</li>\n")
+    taxonomy_lines = [
+        f"<li><b>Kingdom:</b> {html.escape(safe_get(taxonomy, 'kingdom'))}</li>",
+        f"<li><b>Phylum:</b> {html.escape(safe_get(taxonomy, 'phylum'))}</li>",
+        f"<li><b>Class:</b> {html.escape(safe_get(taxonomy, 'class'))}</li>",
+        f"<li><b>Order:</b> {html.escape(safe_get(taxonomy, 'order'))}</li>",
+        f"<li><b>Family:</b> {html.escape(safe_get(taxonomy, 'family'))}</li>",
+        f"<li><b>Genus:</b> {html.escape(safe_get(taxonomy, 'genus'))}</li>",
+        f"<li><b>Scientific name:</b> {html.escape(safe_get(taxonomy, 'scientific_name'))}</li>",
+    ]
 
-    return "".join(parts)
+    locations_text = ", ".join(html.escape(str(loc)) for loc in locations) if locations else "n/a"
+
+    characteristics_lines = []
+    for key in ["diet", "lifespan", "habitat", "predators", "top_speed", "weight"]:
+        if key in characteristics:
+            characteristics_lines.append(
+                f"<li><b>{html.escape(key)}:</b> {html.escape(safe_get(characteristics, key))}</li>"
+            )
+
+    if not characteristics_lines:
+        characteristics_lines.append("<li>n/a</li>")
+
+    return f"""
+    <section class="card">
+      <h2>{name}</h2>
+
+      <h3>Taxonomy</h3>
+      <ul>
+        {''.join(taxonomy_lines)}
+      </ul>
+
+      <h3>Locations</h3>
+      <p>{locations_text}</p>
+
+      <h3>Characteristics</h3>
+      <ul>
+        {''.join(characteristics_lines)}
+      </ul>
+    </section>
+    """
 
 
+def build_html_page(animal_name: str, animals: list[dict], error_message: str | None = None) -> str:
+    """Build final HTML page."""
+    safe_query = html.escape(animal_name)
 
-def serialize_animal(animal_obj):
-    """Serializes one animal object into the required HTML card."""
-    return build_animal_li(animal_obj)
+    if error_message:
+        content = f'<h2 class="error">{html.escape(error_message)}</h2>'
+    elif not animals:
+        content = f'<h2 class="error">The animal "{safe_query}" doesn\'t exist.</h2>'
+    else:
+        sections = "\n".join(build_animal_section(animal) for animal in animals)
+        content = f"""
+        <h2>Results for "{safe_query}"</h2>
+        <p>Found {len(animals)} result(s).</p>
+        {sections}
+        """
+
+    return f"""<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Animals</title>
+    <style>
+      body {{ font-family: Arial, sans-serif; margin: 24px; }}
+      .card {{ border: 1px solid #ddd; border-radius: 10px; padding: 16px; margin: 16px 0; }}
+      .error {{ color: #b00020; }}
+      h1 {{ margin-bottom: 8px; }}
+      h2 {{ margin-top: 0; }}
+      ul {{ margin-top: 8px; }}
+    </style>
+  </head>
+  <body>
+    <h1>Animals API Results</h1>
+    {content}
+  </body>
+</html>
+"""
 
 
-
-def read_template(file_path):
-    """Loads an HTML template file and returns it as a string."""
-    with open(file_path, "r", encoding="utf-8") as handle:
-        return handle.read()
-
-
-def write_html(file_path, html_content):
-    """Writes the given HTML content to a file."""
-    with open(file_path, "w", encoding="utf-8") as handle:
-        handle.write(html_content)
+def write_html_file(html_text: str, filename: str = OUTPUT_FILE) -> None:
+    """Write HTML to disk."""
+    with open(filename, "w", encoding="utf-8") as file:
+        file.write(html_text)
 
 
-def main():
-    animals_data = load_data("animals_data.json")
-    if not isinstance(animals_data, list):
-        print("Fehler: animals_data.json muss eine Liste von Tieren enthalten.")
-        return
+def main() -> None:
+    """CLI entrypoint: ask for animal name, fetch via API, generate HTML."""
+    animal_name = prompt_animal_name()
 
-    if DEBUG_PRINT:
-        for animal in animals_data:
-            fields = extract_animal_fields(animal)
-            if not fields or not fields.get("name"):
-                continue
+    try:
+        animals = fetch_animals(animal_name)
+        page = build_html_page(animal_name, animals)
+    except RuntimeError as exc:
+        page = build_html_page(animal_name, [], error_message=str(exc))
 
-            lines = []
-            lines.append(f'Name: {fields["name"]}')
-            if fields.get("diet"):
-                lines.append(f'Diet: {fields["diet"]}')
-            if fields.get("location"):
-                lines.append(f'Location: {fields["location"]}')
-            if fields.get("type"):
-                lines.append(f'Type: {fields["type"]}')
-
-            print("\n".join(lines))
-            print()
-
-    animals_li_items = []
-    for animal in animals_data:
-        animal_li = serialize_animal(animal)
-
-        if animal_li:
-            animals_li_items.append(animal_li)
-
-    template = read_template("animals_template.html")
-    animals_html = "\n".join(animals_li_items)
-    html_page = template.replace("__REPLACE_ANIMALS_INFO__", animals_html)
-    write_html("animals.html", html_page)
+    write_html_file(page)
+    print(f"Website was successfully generated to the file {OUTPUT_FILE}.")
 
 
 if __name__ == "__main__":

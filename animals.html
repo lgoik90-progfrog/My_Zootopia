@@ -1,234 +1,148 @@
-<html>
-    <head>
-        <style>
-        @gray-darker:               #444444;
-        @gray-dark:                 #696969;
-        @gray:                      #999999;
-        @gray-light:                #cccccc;
-        @gray-lighter:              #ececec;
-        @gray-lightest:             lighten(@gray-lighter,4%);
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Animals</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 24px; }
+      .card { border: 1px solid #ddd; border-radius: 10px; padding: 16px; margin: 16px 0; }
+      .error { color: #b00020; }
+      h1 { margin-bottom: 8px; }
+      h2 { margin-top: 0; }
+      ul { margin-top: 8px; }
+    </style>
+  </head>
+  <body>
+    <h1>Animals API Results</h1>
+    
+        <h2>Results for "lion"</h2>
+        <p>Found 7 result(s).</p>
+        
+    <section class="card">
+      <h2>Cape Lion</h2>
 
+      <h3>Taxonomy</h3>
+      <ul>
+        <li><b>Kingdom:</b> Animalia</li><li><b>Phylum:</b> Chordata</li><li><b>Class:</b> Mammalia</li><li><b>Order:</b> Carnivora</li><li><b>Family:</b> Felidae</li><li><b>Genus:</b> Panthera</li><li><b>Scientific name:</b> Panthera leo melanochaitus</li>
+      </ul>
 
-        html {
-          background-color: #ffe9e9;
-        }
+      <h3>Locations</h3>
+      <p>Africa</p>
 
-        h1 {
-            text-align: center;
-            font-size: 40pt;
-            font-weight: normal;
-        }
+      <h3>Characteristics</h3>
+      <ul>
+        <li><b>diet:</b> Carnivore</li><li><b>lifespan:</b> 25 years</li><li><b>habitat:</b> plains</li><li><b>top_speed:</b> 48 mph</li><li><b>weight:</b> up to 600 pounds</li>
+      </ul>
+    </section>
+    
 
-        body {
-          font-family: 'Roboto','Helvetica Neue', Helvetica, Arial, sans-serif;
-          font-style: normal;
-          font-weight: 400;
-          letter-spacing: 0;
-          padding: 1rem;
-          text-rendering: optimizeLegibility;
-          -webkit-font-smoothing: antialiased;
-          -moz-osx-font-smoothing: grayscale;
-          -moz-font-feature-settings: "liga" on;
-          width: 900px;
-          margin: auto;
-        }
+    <section class="card">
+      <h2>Golden Lion Tamarin</h2>
 
-        .cards {
-          list-style: none;
-          margin: 0;
-          padding: 0;
-        }
+      <h3>Taxonomy</h3>
+      <ul>
+        <li><b>Kingdom:</b> Animalia</li><li><b>Phylum:</b> Chordata</li><li><b>Class:</b> Mammalia</li><li><b>Order:</b> Primates</li><li><b>Family:</b> Callitrichidae</li><li><b>Genus:</b> Leontopithecus</li><li><b>Scientific name:</b> Leontopithecus rosalia</li>
+      </ul>
 
-        .cards__item {
-          background-color: white;
-          border-radius: 0.25rem;
-          box-shadow: 0 20px 40px -14px rgba(0,0,0,0.25);
-          overflow: hidden;
-          padding: 1rem;
-          margin: 50px;
-        }
+      <h3>Locations</h3>
+      <p>South-America</p>
 
-        .card__title {
-          color: @gray-dark;
-          font-size: 1.25rem;
-          font-weight: 300;
-          letter-spacing: 2px;
-          text-transform: uppercase;
-        }
+      <h3>Characteristics</h3>
+      <ul>
+        <li><b>diet:</b> Omnivore</li><li><b>lifespan:</b> 8-15 years</li><li><b>habitat:</b> Lowland tropical forest</li><li><b>predators:</b> Hawks, Wild Cats, Snakes, Rats</li><li><b>top_speed:</b> 24 mph</li><li><b>weight:</b> 550-700g (19-25oz)</li>
+      </ul>
+    </section>
+    
 
-        .card__text {
-          flex: 1 1 auto;
-          font-size: 0.95rem;
-          line-height: 2;
-          margin-bottom: 1.25rem;
-        }
-        </style>
-    </head>
-    <body>
-        <h1>My Animal Repository</h1>
-        <ul class="cards">
-            <li class="cards__item">
-  <div class="card__title">American Foxhound</div>
-  <p class="card__text">
-      <strong>Diet:</strong> Omnivore<br/>
-      <strong>Location:</strong> North-America<br/>
-      <strong>Type:</strong> Hound<br/>
-  </p>
-</li>
+    <section class="card">
+      <h2>Lion</h2>
 
-<li class="cards__item">
-  <div class="card__title">Arctic Fox</div>
-  <p class="card__text">
-      <strong>Diet:</strong> Carnivore<br/>
-      <strong>Location:</strong> Eurasia<br/>
-      <strong>Type:</strong> Mammal<br/>
-  </p>
-</li>
+      <h3>Taxonomy</h3>
+      <ul>
+        <li><b>Kingdom:</b> Animalia</li><li><b>Phylum:</b> Chordata</li><li><b>Class:</b> Mammalia</li><li><b>Order:</b> Carnivora</li><li><b>Family:</b> Felidae</li><li><b>Genus:</b> Panthera</li><li><b>Scientific name:</b> Panthera leo</li>
+      </ul>
 
-<li class="cards__item">
-  <div class="card__title">Cross Fox</div>
-  <p class="card__text">
-      <strong>Diet:</strong> Carnivore<br/>
-      <strong>Location:</strong> North-America<br/>
-      <strong>Type:</strong> mammal<br/>
-  </p>
-</li>
+      <h3>Locations</h3>
+      <p>Africa, Asia</p>
 
-<li class="cards__item">
-  <div class="card__title">Darwin’s fox</div>
-  <p class="card__text">
-      <strong>Diet:</strong> Omnivore<br/>
-      <strong>Location:</strong> South-America<br/>
-      <strong>Type:</strong> Mammal<br/>
-  </p>
-</li>
+      <h3>Characteristics</h3>
+      <ul>
+        <li><b>diet:</b> Carnivore</li><li><b>lifespan:</b> 8 - 15 years</li><li><b>habitat:</b> open woodland, scrub, grassland</li><li><b>top_speed:</b> 35 mph</li><li><b>weight:</b> 120kg - 249kg (264lbs - 550lbs)</li>
+      </ul>
+    </section>
+    
 
-<li class="cards__item">
-  <div class="card__title">English Foxhound</div>
-  <p class="card__text">
-      <strong>Diet:</strong> Omnivore<br/>
-      <strong>Location:</strong> Europe<br/>
-  </p>
-</li>
+    <section class="card">
+      <h2>Lion’s Mane Jellyfish</h2>
 
-<li class="cards__item">
-  <div class="card__title">Fennec Fox</div>
-  <p class="card__text">
-      <strong>Diet:</strong> Omnivore<br/>
-      <strong>Location:</strong> Africa<br/>
-  </p>
-</li>
+      <h3>Taxonomy</h3>
+      <ul>
+        <li><b>Kingdom:</b> Animalia</li><li><b>Phylum:</b> Cnidaria</li><li><b>Class:</b> Scyphozoa</li><li><b>Order:</b> Semaeostomeae</li><li><b>Family:</b> Cyaneidae</li><li><b>Genus:</b> Cyanea</li><li><b>Scientific name:</b> Cyanea capillata</li>
+      </ul>
 
-<li class="cards__item">
-  <div class="card__title">Fox</div>
-  <p class="card__text">
-      <strong>Diet:</strong> Carnivore<br/>
-      <strong>Location:</strong> Africa<br/>
-      <strong>Type:</strong> Mammal<br/>
-  </p>
-</li>
+      <h3>Locations</h3>
+      <p>Ocean</p>
 
-<li class="cards__item">
-  <div class="card__title">Fox Snakes</div>
-  <p class="card__text">
-      <strong>Diet:</strong> Carnivore<br/>
-      <strong>Location:</strong> North-America<br/>
-  </p>
-</li>
+      <h3>Characteristics</h3>
+      <ul>
+        <li><b>diet:</b> Carnivore</li><li><b>lifespan:</b> One year</li><li><b>habitat:</b> Cooler ocean waters</li><li><b>predators:</b> Seabirds, sea turtles, anemones, ocean sunfish, larger jellies but only when the jellyfish is a juvenile.</li><li><b>weight:</b> 200 pounds</li>
+      </ul>
+    </section>
+    
 
-<li class="cards__item">
-  <div class="card__title">Fox Squirrel</div>
-  <p class="card__text">
-      <strong>Diet:</strong> Omnivore<br/>
-      <strong>Location:</strong> Central-America<br/>
-      <strong>Type:</strong> rodent<br/>
-  </p>
-</li>
+    <section class="card">
+      <h2>Lionfish</h2>
 
-<li class="cards__item">
-  <div class="card__title">Fox Terrier</div>
-  <p class="card__text">
-      <strong>Diet:</strong> Omnivore<br/>
-      <strong>Location:</strong> Europe<br/>
-  </p>
-</li>
+      <h3>Taxonomy</h3>
+      <ul>
+        <li><b>Kingdom:</b> Animalia</li><li><b>Phylum:</b> Chordata</li><li><b>Class:</b> Actinopterygii</li><li><b>Order:</b> Scorpaeniformes</li><li><b>Family:</b> Scorpaenidae</li><li><b>Genus:</b> Pterois</li><li><b>Scientific name:</b> Pterois volitans</li>
+      </ul>
 
-<li class="cards__item">
-  <div class="card__title">Golden-Crowned Flying Fox</div>
-  <p class="card__text">
-      <strong>Diet:</strong> Herbivore<br/>
-      <strong>Location:</strong> Asia<br/>
-  </p>
-</li>
+      <h3>Locations</h3>
+      <p>Ocean</p>
 
-<li class="cards__item">
-  <div class="card__title">Gray Fox</div>
-  <p class="card__text">
-      <strong>Diet:</strong> Omnivore<br/>
-      <strong>Location:</strong> Central-America<br/>
-      <strong>Type:</strong> Mammal<br/>
-  </p>
-</li>
+      <h3>Characteristics</h3>
+      <ul>
+        <li><b>diet:</b> Carnivore</li><li><b>lifespan:</b> 10 - 18 years</li><li><b>habitat:</b> Tropical reefs and rocky crevices</li><li><b>predators:</b> Eels, Frogfish, Scorpion Fish</li>
+      </ul>
+    </section>
+    
 
-<li class="cards__item">
-  <div class="card__title">Kit Fox</div>
-  <p class="card__text">
-      <strong>Diet:</strong> Omnivore<br/>
-      <strong>Location:</strong> Central-America<br/>
-      <strong>Type:</strong> mammal<br/>
-  </p>
-</li>
+    <section class="card">
+      <h2>Mountain Lion</h2>
 
-<li class="cards__item">
-  <div class="card__title">Marble Fox</div>
-  <p class="card__text">
-      <strong>Diet:</strong> Omnivore<br/>
-      <strong>Location:</strong> North-America<br/>
-      <strong>Type:</strong> Mammal<br/>
-  </p>
-</li>
+      <h3>Taxonomy</h3>
+      <ul>
+        <li><b>Kingdom:</b> Animalia</li><li><b>Phylum:</b> Chordata</li><li><b>Class:</b> Mammalia</li><li><b>Order:</b> Carnivora</li><li><b>Family:</b> Felidae</li><li><b>Genus:</b> Puma</li><li><b>Scientific name:</b> Felis Concolor</li>
+      </ul>
 
-<li class="cards__item">
-  <div class="card__title">Red Fox</div>
-  <p class="card__text">
-      <strong>Diet:</strong> Omnivore<br/>
-      <strong>Location:</strong> Africa<br/>
-  </p>
-</li>
+      <h3>Locations</h3>
+      <p>Central-America, North-America, South-America</p>
 
-<li class="cards__item">
-  <div class="card__title">Smooth Fox Terrier</div>
-  <p class="card__text">
-      <strong>Diet:</strong> Omnivore<br/>
-      <strong>Location:</strong> Europe<br/>
-  </p>
-</li>
+      <h3>Characteristics</h3>
+      <ul>
+        <li><b>diet:</b> Carnivore</li><li><b>lifespan:</b> 10-20 years</li><li><b>habitat:</b> Forest and mountainous regions</li><li><b>predators:</b> Human, Grizzly Bear</li><li><b>top_speed:</b> 30 mph</li><li><b>weight:</b> 29-90kg (64-198lbs)</li>
+      </ul>
+    </section>
+    
 
-<li class="cards__item">
-  <div class="card__title">Tibetan Fox</div>
-  <p class="card__text">
-      <strong>Diet:</strong> Carnivore<br/>
-      <strong>Location:</strong> Asia<br/>
-      <strong>Type:</strong> Mammal<br/>
-  </p>
-</li>
+    <section class="card">
+      <h2>Sea Lion</h2>
 
-<li class="cards__item">
-  <div class="card__title">Toy Fox Terrier</div>
-  <p class="card__text">
-      <strong>Diet:</strong> Omnivore<br/>
-      <strong>Location:</strong> North-America<br/>
-  </p>
-</li>
+      <h3>Taxonomy</h3>
+      <ul>
+        <li><b>Kingdom:</b> Animalia</li><li><b>Phylum:</b> Chordata</li><li><b>Class:</b> Mammalia</li><li><b>Order:</b> Carnivora</li><li><b>Family:</b> Otariidae</li><li><b>Genus:</b> n/a</li><li><b>Scientific name:</b> Otariidae</li>
+      </ul>
 
-<li class="cards__item">
-  <div class="card__title">Wire Fox Terrier</div>
-  <p class="card__text">
-      <strong>Diet:</strong> Omnivore<br/>
-      <strong>Location:</strong> Europe<br/>
-  </p>
-</li>
+      <h3>Locations</h3>
+      <p>Ocean</p>
 
-        </ul>
-    </body>
+      <h3>Characteristics</h3>
+      <ul>
+        <li><b>diet:</b> Omnivore</li><li><b>lifespan:</b> 15-22 years</li><li><b>habitat:</b> Coastal waters and rocky shorelines</li><li><b>predators:</b> Human, Sharks, Killer Whale</li><li><b>top_speed:</b> 27 mph</li><li><b>weight:</b> 300-1,000kg (660-2,200lbs)</li>
+      </ul>
+    </section>
+    
+        
+  </body>
 </html>
