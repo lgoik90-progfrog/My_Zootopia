@@ -5,7 +5,6 @@ My_Zootopia is a small Python project that fetches animal data from the API Ninj
 
 ## Features
 - Fetch animal data by animal name via external API
-- Renders results into an HTML page using a template
 - Uses a `.env` file for the API key (no hardcoded secrets)
 - Shows a friendly message in the HTML if the animal is not found
 
@@ -23,3 +22,4 @@ My_Zootopia is a small Python project that fetches animal data from the API Ninj
 ### Install dependencies
 ```bash
 pip3 install -r requirements.txt
+```
